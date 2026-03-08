@@ -43,12 +43,7 @@
             margin: 0 auto;
         }
 
-        h1 {
-            font-family: 'Pacifico', cursive;
-            color: #ff4d6d;
-            font-size: 2.2rem;
-            margin-bottom: 12px;
-        }
+        /* УБРАЛИ h1 - больше нет "Привет! ❤️" */
 
         h2 {
             font-size: 1.1rem;
@@ -159,6 +154,8 @@
         }
 
         .final-screen h1 {
+            font-family: 'Pacifico', cursive;
+            color: #ff4d6d;
             font-size: 2.5rem;
             margin-bottom: 20px;
         }
@@ -213,10 +210,6 @@
             .container {
                 padding: 16px;
             }
-            h1 {
-                font-size: 2rem;
-                margin-bottom: 8px;
-            }
             .photo-container {
                 margin-bottom: 10px;
             }
@@ -231,7 +224,7 @@
 
 <!-- КОНТЕЙНЕР ДЛЯ ВОПРОСОВ -->
 <div class="container" id="quiz-container">
-    <h1 id="header-title">Привет! ❤️</h1>
+    <!-- УБРАЛИ h1 - больше нет "Привет! ❤️" -->
     <div class="photo-row" id="photo-row">
         <!-- ФОТО БУДЕТ ВСТАВЛЯТЬСЯ СЮДА ЧЕРЕЗ JS -->
     </div>
@@ -276,8 +269,8 @@
     // ===== ССЫЛКИ НА ФОТО =====
     const PHOTO_URLS = [
         'https://static.tildacdn.com/tild3833-3961-4662-b133-643830313438/1772958595669-w5m84s.jpg', // для 1 вопроса
-        'ССЫЛКА_НА_ФОТО_2', // для 2 вопроса
-        'ССЫЛКА_НА_ФОТО_3', // для 3 вопроса
+        'https://static.tildacdn.com/tild3231-3637-4234-a537-623964373535/1772958371428-uus4wj.jpg', // для 2 вопроса
+        'https://static.tildacdn.com/tild3535-3638-4431-a635-663033383061/2025-09-25_01-29-01.JPG', // для 3 вопроса
         'ССЫЛКА_НА_ФОТО_4', // для 4 вопроса
         'ССЫЛКА_НА_ФОТО_5'  // для 5 вопроса
     ];
