@@ -45,13 +45,14 @@
 
         h2 {
             font-size: 1.1rem;
-            margin-bottom: 16px;
+            margin: 16px 0;
             font-weight: 600;
             color: #555;
             line-height: 1.4;
+            min-height: 60px;
         }
 
-        /* ЕДИНЫЙ СТИЛЬ ДЛЯ ВСЕХ ФОТО */
+        /* Стиль для фото */
         .photo-container {
             width: 100%;
             max-width: 400px;
@@ -71,7 +72,7 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-            margin: 8px 0 8px 0;
+            margin: 8px 0 16px 0;
         }
 
         .btn {
@@ -87,7 +88,7 @@
             font-weight: 600;
             width: 100%;
             
-            /* ПОЛНОСТЬЮ УБИРАЕМ ПОДСВЕТКУ */
+            /* Убираем подсветку */
             -webkit-tap-highlight-color: transparent;
             -webkit-touch-callout: none;
             -webkit-user-select: none;
@@ -101,11 +102,6 @@
         .btn:active,
         .btn:hover {
             outline: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .btn::-moz-focus-inner {
-            border: 0;
         }
 
         .btn:hover {
@@ -119,44 +115,24 @@
             transform: scale(0.98);
         }
 
-        .reaction-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.98);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            box-sizing: border-box;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-            z-index: 1000;
-            overflow-y: auto;
+        /* Страницы */
+        .page {
+            display: none;
         }
 
-        .reaction-modal.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        /* Фото в модалке подчиняется тем же правилам */
-        .reaction-modal .photo-container {
-            max-width: 400px;
-            margin: 0 auto 20px auto;
+        .page.active {
+            display: block;
         }
 
         .reaction-text {
             font-size: 1.3rem;
-            margin: 10px 0 20px 0;
+            margin: 20px 0 30px 0;
             line-height: 1.5;
             color: #333;
-            max-width: 400px;
             padding: 0 10px;
+            background: #fdf2f8;
+            border-radius: 20px;
+            padding: 20px;
         }
 
         .next-btn {
@@ -169,9 +145,8 @@
             cursor: pointer;
             font-weight: 600;
             box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
-            margin-bottom: 10px;
-            
-            /* Убираем подсветку и у кнопки "Дальше" */
+            margin: 10px 0 20px 0;
+            width: 100%;
             -webkit-tap-highlight-color: transparent;
             outline: none;
         }
@@ -210,10 +185,9 @@
             animation: pulse 2s infinite;
             font-weight: 600;
             box-shadow: 0 5px 20px rgba(46, 204, 113, 0.5);
-            
-            /* Убираем подсветку и у финальной кнопки */
             -webkit-tap-highlight-color: transparent;
             outline: none;
+            width: 100%;
         }
 
         @keyframes pulse {
@@ -237,185 +211,206 @@
             to { opacity: 1; } 
         }
 
-        .photo-row {
-            width: 100%;
+        .progress {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #ff4d6d;
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
 
-<!-- КОНТЕЙНЕР ДЛЯ ВОПРОСОВ -->
-<div class="container" id="quiz-container">
-    <div class="photo-row" id="photo-row">
-        <!-- ФОТО ДЛЯ ВОПРОСА -->
-    </div>
-    <h2 id="question-text">Загрузка...</h2>
-    <div class="options" id="options-container">
-        <!-- Кнопки -->
-    </div>
-
-    <!-- МОДАЛКА С ФОТО -->
-    <div class="reaction-modal" id="reaction-modal">
-        <div class="photo-container" id="reaction-photo-container">
-            <!-- ФОТО ДЛЯ РЕАКЦИИ -->
-        </div>
-        <p class="reaction-text" id="reaction-message"></p>
-        <button class="next-btn" onclick="nextQuestion()">Дальше ➜</button>
-    </div>
-</div>
-
-<!-- ФИНАЛЬНЫЙ ЭКРАН -->
-<div class="container hidden" id="final-container">
-    <div class="final-screen">
+<!-- КОНТЕЙНЕР ДЛЯ ВСЕХ СТРАНИЦ -->
+<div class="container" id="main-container">
+    
+    <!-- СТРАНИЦА 1: Вопрос 1 -->
+    <div class="page active" id="page-q1">
+        <div class="progress">❤️ 1/10 ❤️</div>
         <div class="photo-container">
-            <img src="" alt="фото" id="final-photo">
+            <img src="https://static.tildacdn.com/tild3833-3961-4662-b133-643830313438/1772958595669-w5m84s.jpg" alt="фото">
         </div>
-        <h1>С 8 Марта! 🌷</h1>
-        <p>Спасибо что ответила вопросы 😘</p>
-        <p style="font-size: 1.5rem; color: #ff4d6d; font-weight: bold;">Ты — самая лучшая!</p>
-        <button class="final-btn" onclick="finishQuiz()">Нажми, если улыбнулась</button>
-        <div id="bonus-message" class="hidden">
-            <p>🎁 Как вернешься в город, приглашаю тебя на ужин.</p>
+        <h2>Какого цвета у этой красивой девушки?</h2>
+        <div class="options">
+            <button class="btn" onclick="goToPage('page-r1', 'Голубые')">Голубые</button>
+            <button class="btn" onclick="goToPage('page-r1', 'Карие')">Карие</button>
+            <button class="btn" onclick="goToPage('page-r1', 'Зелёные')">Зелёные</button>
+            <button class="btn" onclick="goToPage('page-r1', 'Самые красивые')">Самые красивые</button>
+        </div>
+    </div>
+
+    <!-- СТРАНИЦА 2: Реакция на вопрос 1 -->
+    <div class="page" id="page-r1">
+        <div class="progress">❤️ 2/10 ❤️</div>
+        <div class="photo-container">
+            <img src="https://static.tildacdn.com/tild3533-3037-4731-b937-646434653339/1772966405888-0xwvgb.jpeg" alt="фото">
+        </div>
+        <div class="reaction-text" id="reaction1-text">Точно! Они правда самые красивые. 😉</div>
+        <button class="next-btn" onclick="nextPage('page-q2')">Дальше ➜</button>
+    </div>
+
+    <!-- СТРАНИЦА 3: Вопрос 2 -->
+    <div class="page" id="page-q2">
+        <div class="progress">❤️ 3/10 ❤️</div>
+        <div class="photo-container">
+            <img src="https://static.tildacdn.com/tild3231-3637-4234-a537-623964373535/1772958371428-uus4wj.jpg" alt="фото">
+        </div>
+        <h2>Где было наше первое свидание?</h2>
+        <div class="options">
+            <button class="btn" onclick="goToPage('page-r2', 'Заельцовский парк')">Заельцовский парк</button>
+            <button class="btn" onclick="goToPage('page-r2', 'Сыроварня')">Сыроварня</button>
+            <button class="btn" onclick="goToPage('page-r2', 'В кино')">В кино</button>
+        </div>
+    </div>
+
+    <!-- СТРАНИЦА 4: Реакция на вопрос 2 -->
+    <div class="page" id="page-r2">
+        <div class="progress">❤️ 4/10 ❤️</div>
+        <div class="photo-container">
+            <img src="https://static.tildacdn.com/tild3661-3532-4630-b734-396231613232/1772964998667-if1myj.jpeg" alt="фото">
+        </div>
+        <div class="reaction-text" id="reaction2-text">Я до сих пор помню, как волновался.😊</div>
+        <button class="next-btn" onclick="nextPage('page-q3')">Дальше ➜</button>
+    </div>
+
+    <!-- СТРАНИЦА 5: Вопрос 3 -->
+    <div class="page" id="page-q3">
+        <div class="progress">❤️ 5/10 ❤️</div>
+        <div class="photo-container">
+            <img src="https://static.tildacdn.com/tild3535-3638-4431-a635-663033383061/2025-09-25_01-29-01.JPG" alt="фото">
+        </div>
+        <h2>Как думаешь, какая твоя черта самая притягательная?</h2>
+        <div class="options">
+            <button class="btn" onclick="goToPage('page-r3', 'Чувство юмора')">Чувство юмора</button>
+            <button class="btn" onclick="goToPage('page-r3', 'Ум')">Ум</button>
+            <button class="btn" onclick="goToPage('page-r3', 'Доброта')">Доброта</button>
+            <button class="btn" onclick="goToPage('page-r3', 'Твоя улыбка')">Твоя улыбка</button>
+        </div>
+    </div>
+
+    <!-- СТРАНИЦА 6: Реакция на вопрос 3 -->
+    <div class="page" id="page-r3">
+        <div class="progress">❤️ 6/10 ❤️</div>
+        <div class="photo-container">
+            <img src="https://static.tildacdn.com/tild3634-6661-4134-b261-353132653134/1772965887546-pi1nyb.jpeg" alt="фото">
+        </div>
+        <div class="reaction-text">В тебе все прекрасно, но твоя улыбка - что-то особенное</div>
+        <button class="next-btn" onclick="nextPage('page-q4')">Дальше ➜</button>
+    </div>
+
+    <!-- СТРАНИЦА 7: Вопрос 4 -->
+    <div class="page" id="page-q4">
+        <div class="progress">❤️ 7/10 ❤️</div>
+        <div class="photo-container">
+            <img src="https://static.tildacdn.com/tild6537-3839-4036-b132-326435363263/1772966131402-3xz361.jpeg" alt="фото">
+        </div>
+        <h2>Если бы я был волшебником, что бы ты попросила прямо сейчас?</h2>
+        <div class="options">
+            <button class="btn" onclick="goToPage('page-r4', 'Цветы')">Цветы</button>
+            <button class="btn" onclick="goToPage('page-r4', 'Хорошую музыку')">Хорошую музыку</button>
+            <button class="btn" onclick="goToPage('page-r4', 'Чтобы день длился дольше')">Чтобы день длился дольше</button>
+            <button class="btn" onclick="goToPage('page-r4', 'Сюрприз')">Сюрприз</button>
+        </div>
+    </div>
+
+    <!-- СТРАНИЦА 8: Реакция на вопрос 4 -->
+    <div class="page" id="page-r4">
+        <div class="progress">❤️ 8/10 ❤️</div>
+        <div class="photo-container">
+            <img src="https://static.tildacdn.com/tild3235-6232-4033-b732-346636303038/1772965458031-03l95v.jpeg" alt="фото">
+        </div>
+        <div class="reaction-text" id="reaction4-text">Уже заказал. Как вернёшься — они тебя ждут 🌷</div>
+        <button class="next-btn" onclick="nextPage('page-q5')">Дальше ➜</button>
+    </div>
+
+    <!-- СТРАНИЦА 9: Вопрос 5 -->
+    <div class="page" id="page-q5">
+        <div class="progress">❤️ 9/10 ❤️</div>
+        <div class="photo-container">
+            <img src="https://static.tildacdn.com/tild6332-3836-4464-a130-306235616366/1772965938279-6frrda.jpeg" alt="фото">
+        </div>
+        <h2>Сколько комплиментов ты готова получать в день?</h2>
+        <div class="options">
+            <button class="btn" onclick="goToPage('page-r5', '5')">5</button>
+            <button class="btn" onclick="goToPage('page-r5', '10')">10</button>
+            <button class="btn" onclick="goToPage('page-r5', '15')">15</button>
+            <button class="btn" onclick="goToPage('page-r5', 'Бесконечность')">Бесконечность</button>
+        </div>
+    </div>
+
+    <!-- СТРАНИЦА 10: Реакция на вопрос 5 -->
+    <div class="page" id="page-r5">
+        <div class="progress">❤️ 10/10 ❤️</div>
+        <div class="photo-container">
+            <img src="https://static.tildacdn.com/tild6436-3131-4661-b032-323064363636/1772966222007-dj9iot.jpeg" alt="фото">
+        </div>
+        <div class="reaction-text" id="reaction5-text">Мудрый выбор. Придётся мне потренироваться 😄</div>
+        <button class="next-btn" onclick="showFinal()">Дальше ➜</button>
+    </div>
+
+    <!-- ФИНАЛЬНЫЙ ЭКРАН -->
+    <div class="page" id="final">
+        <div class="final-screen">
+            <div class="photo-container">
+                <img src="https://static.tildacdn.com/tild3830-3666-4630-b835-396262626336/2023-05-22_23-54-09.JPG" alt="фото">
+            </div>
+            <h1>С 8 Марта! 🌷</h1>
+            <p>Спасибо что ответила вопросы 😘</p>
+            <p style="font-size: 1.5rem; color: #ff4d6d; font-weight: bold;">Ты — самая лучшая!</p>
+            <button class="final-btn" onclick="finishQuiz()">Нажми, если улыбнулась</button>
+            <div id="bonus-message" class="hidden">
+                <p>🎁 Как вернешься в город, приглашаю тебя на ужин.</p>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
     // ==========================================
-    // НАСТРОЙКИ (ЗАПОЛНИ ЭТО ПЕРЕД ЗАГРУЗКОЙ!)
+    // НАСТРОЙКИ
     // ==========================================
-    
-    // 1. Токен твоего бота от BotFather
     const TELEGRAM_BOT_TOKEN = '8797961566:AAHuRDWTf05o6PllqtA2srjntYCPhmEL5y0'; 
-    
-    // 2. Твой ID чата (от userinfobot)
     const TELEGRAM_CHAT_ID = '211978203'; 
-
-    // 3. Правильный цвет глаз (для логики первого вопроса)
-    const CORRECT_EYE_COLOR = "Голубые"; 
-
-    // ==================== 🍂 ВСЕ ФОТО ДЛЯ САЙТА ====================
-    // Порядок: В1 → Р1 → В2 → Р2 → В3 → Р3 → В4 → Р4 → В5 → Р5 → ФИНАЛ
-    const PHOTO_URLS = [
-        'https://static.tildacdn.com/tild3833-3961-4662-b133-643830313438/1772958595669-w5m84s.jpg',  // Вопрос 1
-        'https://static.tildacdn.com/tild3533-3037-4731-b937-646434653339/1772966405888-0xwvgb.jpeg',  // Реакция на вопрос 1
-        'https://static.tildacdn.com/tild3231-3637-4234-a537-623964373535/1772958371428-uus4wj.jpg',  // Вопрос 2
-        'https://static.tildacdn.com/tild3661-3532-4630-b734-396231613232/1772964998667-if1myj.jpeg',  // Реакция на вопрос 2
-        'https://static.tildacdn.com/tild3535-3638-4431-a635-663033383061/2025-09-25_01-29-01.JPG',  // Вопрос 3
-        'https://static.tildacdn.com/tild3634-6661-4134-b261-353132653134/1772965887546-pi1nyb.jpeg',  // Реакция на вопрос 3
-        'https://static.tildacdn.com/tild6537-3839-4036-b132-326435363263/1772966131402-3xz361.jpeg',  // Вопрос 4
-        'https://static.tildacdn.com/tild3235-6232-4033-b732-346636303038/1772965458031-03l95v.jpeg',  // Реакция на вопрос 4
-        'https://static.tildacdn.com/tild6332-3836-4464-a130-306235616366/1772965938279-6frrda.jpeg',  // Вопрос 5
-        'https://static.tildacdn.com/tild6436-3131-4661-b032-323064363636/1772966222007-dj9iot.jpeg', // Реакция на вопрос 5
-        'https://static.tildacdn.com/tild3830-3666-4630-b835-396262626336/2023-05-22_23-54-09.JPG'  // Финальный экран
-    ];
-    // ================================================================
     
-    const questions = [
-        {
-            text: "Какого цвета у этой красивой девушки?",
-            options: [
-                { text: "Голубые", reaction: "Точно! Они правда самые красивые. 😉" },
-                { text: "Карие", reaction: "Хитрость засчитана! Хотя на самом деле они правда самые красивые." },
-                { text: "Зелёные", reaction: "Хитрость засчитана! Хотя на самом деле они правда самые красивые." },
-                { text: "Самые красивые", reaction: "Хитрость засчитана! Хотя на самом деле они правда самые красивые." }
-            ]
-        },
-        {
-            text: "Где было наше первое свидание?",
-            options: [
-                { text: "Заельцовский парк", reaction: "Я до сих пор помню, как волновался.😊" },
-                { text: "Сыроварня", reaction: "Я до сих пор помню, как волновался.😊" },
-                { text: "В кино", reaction: "Я до сих пор помню, как волновался.😊" }
-            ]
-        },
-        {
-            text: "Как думаешь, какая твоя черта самая притягательная?",
-            options: [
-                { text: "Чувство юмора", reaction: "В тебе все прекрасно, но твоя улыбка - что-то особенное" },
-                { text: "Ум", reaction: "В тебе все прекрасно, но твоя улыбка - что-то особенное" },
-                { text: "Доброта", reaction: "В тебе все прекрасно, но твоя улыбка - что-то особенное" },
-                { text: "Твоя улыбка", reaction: "В тебе все прекрасно, но твоя улыбка - что-то особенное" }
-            ]
-        },
-        {
-            text: "Если бы я был волшебником, что бы ты попросила прямо сейчас?",
-            options: [
-                { text: "Цветы", reaction: "Уже заказал. Как вернёшься — они тебя ждут 🌷" },
-                { text: "Хорошую музыку", reaction: "Скину тебе плейлист, который специально собирал. Говорят, под него хочется улыбаться" },
-                { text: "Чтобы день длился дольше", reaction: "Приезжай скорее, устроим романтический ужин 😊" },
-                { text: "Сюрприз", reaction: "А вот это уже интересно. Значит, придётся что-то придумать... Жди" }
-            ]
-        },
-        {
-            text: "Сколько комплиментов ты готова получать в день?",
-            options: [
-                { text: "5", reaction: "Скромничаешь? Ладно, начнём с этого, а там посмотрим" },
-                { text: "10", reaction: "Скромничаешь? Ладно, начнём с этого, а там посмотрим" },
-                { text: "15", reaction: "Скромничаешь? Ладно, начнём с этого, а там посмотрим" },
-                { text: "Бесконечность", reaction: "Мудрый выбор. Придётся мне потренироваться 😄" }
-            ]
-        }
-    ];
-
-    let currentStep = 0;
     let userAnswers = [];
+    let currentReaction = '';
 
-    function renderQuestion() {
-        const q = questions[currentStep];
-        document.getElementById('question-text').innerText = q.text;
+    function goToPage(pageId, answer) {
+        userAnswers.push(answer);
         
-        // ФОТО ДЛЯ ВОПРОСА
-        const photoIndex = currentStep * 2;
-        const photoRow = document.getElementById('photo-row');
-        photoRow.innerHTML = `
-            <div class="photo-container">
-                <img src="${PHOTO_URLS[photoIndex]}" alt="фото">
-            </div>
-        `;
-        
-        const container = document.getElementById('options-container');
-        container.innerHTML = '';
-
-        q.options.forEach(opt => {
-            const btn = document.createElement('button');
-            btn.className = 'btn';
-            btn.innerText = opt.text;
-            btn.onclick = () => handleAnswer(opt.reaction, opt.text);
-            container.appendChild(btn);
-        });
-    }
-
-    function handleAnswer(reaction, answerText) {
-        userAnswers.push(answerText);
-        
-        // ФОТО ДЛЯ РЕАКЦИИ
-        const photoIndex = currentStep * 2 + 1;
-        const reactionPhotoContainer = document.getElementById('reaction-photo-container');
-        reactionPhotoContainer.innerHTML = `
-            <div class="photo-container">
-                <img src="${PHOTO_URLS[photoIndex]}" alt="фото">
-            </div>
-        `;
-        
-        document.getElementById('reaction-message').innerText = reaction;
-        document.getElementById('reaction-modal').classList.add('active');
-    }
-
-    function nextQuestion() {
-        document.getElementById('reaction-modal').classList.remove('active');
-        currentStep++;
-        if (currentStep < questions.length) {
-            renderQuestion();
-        } else {
-            showFinal();
+        // Обновляем текст реакции в зависимости от ответа
+        if (pageId === 'page-r1') {
+            if (answer === 'Голубые') document.getElementById('reaction1-text').innerText = 'Точно! Они правда самые красивые. 😉';
+            else document.getElementById('reaction1-text').innerText = 'Хитрость засчитана! Хотя на самом деле они правда самые красивые.';
         }
+        else if (pageId === 'page-r2') {
+            document.getElementById('reaction2-text').innerText = 'Я до сих пор помню, как волновался.😊';
+        }
+        else if (pageId === 'page-r4') {
+            if (answer === 'Цветы') document.getElementById('reaction4-text').innerText = 'Уже заказал. Как вернёшься — они тебя ждут 🌷';
+            else if (answer === 'Хорошую музыку') document.getElementById('reaction4-text').innerText = 'Скину тебе плейлист, который специально собирал. Говорят, под него хочется улыбаться';
+            else if (answer === 'Чтобы день длился дольше') document.getElementById('reaction4-text').innerText = 'Приезжай скорее, устроим романтический ужин 😊';
+            else document.getElementById('reaction4-text').innerText = 'А вот это уже интересно. Значит, придётся что-то придумать... Жди';
+        }
+        else if (pageId === 'page-r5') {
+            if (answer === 'Бесконечность') document.getElementById('reaction5-text').innerText = 'Мудрый выбор. Придётся мне потренироваться 😄';
+            else document.getElementById('reaction5-text').innerText = 'Скромничаешь? Ладно, начнём с этого, а там посмотрим';
+        }
+        
+        // Переходим на страницу реакции
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+    }
+
+    function nextPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
     }
 
     function showFinal() {
-        document.getElementById('quiz-container').classList.add('hidden');
-        document.getElementById('final-container').classList.remove('hidden');
-        document.getElementById('final-photo').src = PHOTO_URLS[10];
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById('final').classList.add('active');
         launchConfetti();
     }
 
@@ -436,11 +431,6 @@
     }
 
     async function sendToTelegram() {
-        if(TELEGRAM_BOT_TOKEN === 'ТВОЙ_ТОКЕН_БОТА') {
-            console.log("Токен не настроен!");
-            return; 
-        }
-
         const message = `🌸 Девушка прошла квест!\n\nОтветы:\n${userAnswers.join('\n')}`;
         
         try {
@@ -456,8 +446,6 @@
             console.log("Ошибка отправки", e);
         }
     }
-
-    renderQuestion();
 </script>
 
 </body>
