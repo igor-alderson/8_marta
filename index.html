@@ -43,8 +43,6 @@
             margin: 0 auto;
         }
 
-        /* УБРАЛИ h1 - больше нет "Привет! ❤️" */
-
         h2 {
             font-size: 1.1rem;
             margin-bottom: 16px;
@@ -53,7 +51,6 @@
             line-height: 1.4;
         }
 
-        /* ФОТО НА ВСЮ ШИРИНУ, БЕЗ РАМКИ, 3:4 */
         .photo-container {
             width: 100%;
             margin-bottom: 16px;
@@ -117,6 +114,7 @@
             pointer-events: none;
             transition: opacity 0.3s ease;
             z-index: 1000;
+            overflow-y: auto;
         }
 
         .reaction-modal.active {
@@ -126,7 +124,7 @@
 
         .reaction-text {
             font-size: 1.3rem;
-            margin-bottom: 30px;
+            margin: 20px 0 30px 0;
             line-height: 1.5;
             color: #333;
             max-width: 400px;
@@ -142,6 +140,7 @@
             cursor: pointer;
             font-weight: 600;
             box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
+            margin-bottom: 20px;
         }
 
         .hidden {
@@ -157,7 +156,7 @@
             font-family: 'Pacifico', cursive;
             color: #ff4d6d;
             font-size: 2.5rem;
-            margin-bottom: 20px;
+            margin: 15px 0 20px 0;
         }
 
         .final-screen p {
@@ -204,36 +203,25 @@
         .photo-row {
             width: 100%;
         }
-
-        /* Адаптация для совсем маленьких экранов */
-        @media (max-height: 700px) {
-            .container {
-                padding: 16px;
-            }
-            .photo-container {
-                margin-bottom: 10px;
-            }
-            .btn {
-                padding: 12px;
-                font-size: 0.95rem;
-            }
-        }
     </style>
 </head>
 <body>
 
 <!-- КОНТЕЙНЕР ДЛЯ ВОПРОСОВ -->
 <div class="container" id="quiz-container">
-    <!-- УБРАЛИ h1 - больше нет "Привет! ❤️" -->
     <div class="photo-row" id="photo-row">
-        <!-- ФОТО БУДЕТ ВСТАВЛЯТЬСЯ СЮДА ЧЕРЕЗ JS -->
+        <!-- ФОТО ДЛЯ ВОПРОСА -->
     </div>
     <h2 id="question-text">Загрузка...</h2>
     <div class="options" id="options-container">
-        <!-- Кнопки появятся здесь -->
+        <!-- Кнопки -->
     </div>
 
+    <!-- МОДАЛКА С ФОТО -->
     <div class="reaction-modal" id="reaction-modal">
+        <div class="photo-container" id="reaction-photo-container">
+            <!-- ФОТО ДЛЯ РЕАКЦИИ -->
+        </div>
         <p class="reaction-text" id="reaction-message"></p>
         <button class="next-btn" onclick="nextQuestion()">Дальше ➜</button>
     </div>
@@ -242,6 +230,9 @@
 <!-- ФИНАЛЬНЫЙ ЭКРАН -->
 <div class="container hidden" id="final-container">
     <div class="final-screen">
+        <div class="photo-container">
+            <img src="" alt="фото" id="final-photo">
+        </div>
         <h1>С 8 Марта! 🌷</h1>
         <p>Ты прошла квест, и теперь я официально заявляю:</p>
         <p style="font-size: 1.5rem; color: #ff4d6d; font-weight: bold;">Ты — самая лучшая!</p>
@@ -266,15 +257,22 @@
     // 3. Правильный цвет глаз (для логики первого вопроса)
     const CORRECT_EYE_COLOR = "Голубые"; 
 
-    // ===== ССЫЛКИ НА ФОТО =====
+    // ==================== 🍂 ВСЕ ФОТО ДЛЯ САЙТА ====================
+    // Порядок: В1 → Р1 → В2 → Р2 → В3 → Р3 → В4 → Р4 → В5 → Р5 → ФИНАЛ
     const PHOTO_URLS = [
-        'https://static.tildacdn.com/tild3833-3961-4662-b133-643830313438/1772958595669-w5m84s.jpg', // для 1 вопроса
-        'https://static.tildacdn.com/tild3231-3637-4234-a537-623964373535/1772958371428-uus4wj.jpg', // для 2 вопроса
-        'https://static.tildacdn.com/tild3535-3638-4431-a635-663033383061/2025-09-25_01-29-01.JPG', // для 3 вопроса
-        'https://static.tildacdn.com/tild3535-3638-4431-a635-663033383061/2025-09-25_01-29-01.JPG', // для 4 вопроса
-        'https://static.tildacdn.com/tild3535-3638-4431-a635-663033383061/2025-09-25_01-29-01.JPG'  // для 5 вопроса
+        'https://static.tildacdn.com/tild3833-3961-4662-b133-643830313438/1772958595669-w5m84s.jpg',  // Вопрос 1
+        'ССЫЛКА_НА_ФОТО_2',  // Реакция на вопрос 1
+        'https://static.tildacdn.com/tild3231-3637-4234-a537-623964373535/1772958371428-uus4wj.jpg',  // Вопрос 2
+        'ССЫЛКА_НА_ФОТО_4',  // Реакция на вопрос 2
+        'https://static.tildacdn.com/tild3535-3638-4431-a635-663033383061/2025-09-25_01-29-01.JPG',  // Вопрос 3
+        'ССЫЛКА_НА_ФОТО_6',  // Реакция на вопрос 3
+        'ССЫЛКА_НА_ФОТО_7',  // Вопрос 4
+        'ССЫЛКА_НА_ФОТО_8',  // Реакция на вопрос 4
+        'ССЫЛКА_НА_ФОТО_9',  // Вопрос 5
+        'ССЫЛКА_НА_ФОТО_10', // Реакция на вопрос 5
+        'https://static.tildacdn.com/tild3830-3666-4630-b835-396262626336/2023-05-22_23-54-09.JPG'  // Финальный экран
     ];
-    // ===========================
+    // ================================================================
     
     const questions = [
         {
@@ -330,11 +328,12 @@
         const q = questions[currentStep];
         document.getElementById('question-text').innerText = q.text;
         
-        // ОТОБРАЖАЕМ ФОТО
+        // ФОТО ДЛЯ ВОПРОСА (используем четные индексы: 0,2,4,6,8)
+        const photoIndex = currentStep * 2; // 0,2,4,6,8
         const photoRow = document.getElementById('photo-row');
         photoRow.innerHTML = `
             <div class="photo-container">
-                <img src="${PHOTO_URLS[currentStep]}" alt="фото">
+                <img src="${PHOTO_URLS[photoIndex]}" alt="фото">
             </div>
         `;
         
@@ -352,6 +351,16 @@
 
     function handleAnswer(reaction, answerText) {
         userAnswers.push(answerText);
+        
+        // ФОТО ДЛЯ РЕАКЦИИ (используем нечетные индексы: 1,3,5,7,9)
+        const photoIndex = currentStep * 2 + 1; // 1,3,5,7,9
+        const reactionPhotoContainer = document.getElementById('reaction-photo-container');
+        reactionPhotoContainer.innerHTML = `
+            <div class="photo-container">
+                <img src="${PHOTO_URLS[photoIndex]}" alt="фото">
+            </div>
+        `;
+        
         document.getElementById('reaction-message').innerText = reaction;
         document.getElementById('reaction-modal').classList.add('active');
     }
@@ -369,6 +378,10 @@
     function showFinal() {
         document.getElementById('quiz-container').classList.add('hidden');
         document.getElementById('final-container').classList.remove('hidden');
+        
+        // ФОТО ДЛЯ ФИНАЛА (индекс 10)
+        document.getElementById('final-photo').src = PHOTO_URLS[10];
+        
         launchConfetti();
     }
 
