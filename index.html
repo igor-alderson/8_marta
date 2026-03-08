@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Для тебя ❤️</title>
+    <!-- Шрифты -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Pacifico&display=swap" rel="stylesheet">
+    <!-- Конфетти -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden; /* Убираем скролл у всей страницы */
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            background-color: #ffe6e6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #4a4a4a;
+            height: 100dvh; /* Используем динамическую высоту экрана */
+            padding: 10px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+            height: 95dvh; /* Почти весь экран */
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 25px;
+        }
+
+        h1 {
+            font-family: 'Pacifico', cursive;
+            color: #ff4d6d;
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+            flex-shrink: 0;
+        }
+
+        h2 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #555;
+            line-height: 1.3;
+            flex-shrink: 0;
+        }
+
+        /* ФОТО НА ВСЮ ШИРИНУ, БЕЗ РАМКИ, 3:4 */
+        .photo-container {
+            width: 100%;
+            flex-shrink: 0;
+            margin-bottom: 10px;
+        }
+        
+        .photo-container img {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 3 / 4;
+            object-fit: cover;
+            display: block;
+            border-radius: 12px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+            overflow-y: auto; /* Если кнопок много — скролл только внутри options */
+            margin: 5px 0 5px 0;
+            padding-right: 2px;
+        }
+
+        /* Скрываем скролл для красоты */
+        .options::-webkit-scrollbar {
+            width: 4px;
+        }
+        .options::-webkit-scrollbar-thumb {
+            background: #ffccd5;
+            border-radius: 4px;
+        }
+
+        .btn {
+            background: #fff0f3;
+            border: 2px solid #ffccd5;
+            color: #ff4d6d;
+            padding: 12px 15px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .btn:hover {
+            background: #ff4d6d;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.3);
+        }
+
+        .reaction-modal {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+            border-radius: 20px;
+        }
+
+        .reaction-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .reaction-text {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            line-height: 1.4;
+            color: #333;
+            padding: 0 10px;
+        }
+
+        .next-btn {
+            background: #ff4d6d;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .final-screen {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .final-screen h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .final-screen p {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .final-btn {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-top: 10px;
+            animation: pulse 2s infinite;
+            font-weight: 600;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        #bonus-message {
+            margin-top: 15px;
+            color: #555;
+            animation: fadeIn 1s;
+            font-size: 1rem;
+        }
+
+        @keyframes fadeIn { 
+            from { opacity: 0; } 
+            to { opacity: 1; } 
+        }
+
+        .photo-row {
+            flex-shrink: 0;
+            width: 100%;
+        }
+
+        /* Оптимизация под маленькие экраны */
+        @media (max-height: 700px) {
+            .container {
+                padding: 15px 20px;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .photo-container img {
+                max-height: 35vh;
+            }
+            .btn {
+                padding: 10px 12px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- КОНТЕЙНЕР ДЛЯ ВОПРОСОВ -->
+<div class="container" id="quiz-container">
+    <h1 id="header-title">Привет! ❤️</h1>
+    <div class="photo-row" id="photo-row">
+        <!-- ФОТО БУДЕТ ВСТАВЛЯТЬСЯ СЮДА ЧЕРЕЗ JS -->
+    </div>
+    <h2 id="question-text">Загрузка...</h2>
+    <div class="options" id="options-container">
+        <!-- Кнопки появятся здесь -->
+    </div>
+
+    <div class="reaction-modal" id="reaction-modal">
+        <p class="reaction-text" id="reaction-message"></p>
+        <button class="next-btn" onclick="nextQuestion()">Дальше ➜</button>
+    </div>
+</div>
+
+<!-- ФИНАЛЬНЫЙ ЭКРАН -->
+<div class="container hidden" id="final-container">
+    <div class="final-screen">
+        <h1>С 8 Марта! 🌷</h1>
+        <p style="font-size: 1.2rem; margin-bottom: 20px;">Ты прошла квест, и теперь я официально заявляю:</p>
+        <p style="font-size: 1.5rem; color: #ff4d6d; font-weight: bold;">Ты — самая лучшая!</p>
+        <button class="final-btn" onclick="finishQuiz()">Нажми, если улыбнулась</button>
+        <div id="bonus-message" class="hidden">
+            <p>🎁 <b>Бонус:</b> Твои цветы уже ждут тебя дома (или в сообщении)! Люблю тебя.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ==========================================
+    // НАСТРОЙКИ (ЗАПОЛНИ ЭТО ПЕРЕД ЗАГРУЗКОЙ!)
+    // ==========================================
+    
+    // 1. Токен твоего бота от BotFather
+    const TELEGRAM_BOT_TOKEN = 'ТВОЙ_ТОКЕН_БОТА'; 
+    
+    // 2. Твой ID чата (от userinfobot)
+    const TELEGRAM_CHAT_ID = 'ТВОЙ_ID_ЧАТА'; 
+
+    // 3. Правильный цвет глаз (для логики первого вопроса)
+    const CORRECT_EYE_COLOR = "Карие"; 
+
+    // ===== ССЫЛКИ НА ФОТО =====
+    const PHOTO_URLS = [
+        'https://static.tildacdn.com/tild3833-3961-4662-b133-643830313438/1772958595669-w5m84s.jpg', // для 1 вопроса
+        'https://static.tildacdn.com/tild3231-3637-4234-a537-623964373535/1772958371428-uus4wj.jpg', // для 2 вопроса
+        'ССЫЛКА_НА_ФОТО_3', // для 3 вопроса
+        'ССЫЛКА_НА_ФОТО_4', // для 4 вопроса
+        'ССЫЛКА_НА_ФОТО_5'  // для 5 вопроса
+    ];
+    // ===========================
+    
+    const questions = [
+        {
+            text: "Какого цвета глаза у той самой девушки, для которой я сделал этот квест?",
+            options: [
+                { text: CORRECT_EYE_COLOR, reaction: "Точно! Просто проверял, помнишь ли ты свой главный секрет 😉" },
+                { text: "Голубые", reaction: "Хитрость засчитана! Хотя на самом деле они у тебя " + CORRECT_EYE_COLOR + ". И да, они правда самые красивые." },
+                { text: "Зелёные", reaction: "Хитрость засчитана! Хотя на самом деле они у тебя " + CORRECT_EYE_COLOR + ". И да, они правда самые красивые." },
+                { text: "Самые красивые", reaction: "Хитрость засчитана! Хотя на самом деле они у тебя " + CORRECT_EYE_COLOR + ". И да, они правда самые красивые." }
+            ]
+        },
+        {
+            text: "Где было наше первое свидание?",
+            options: [
+                { text: "В парке", reaction: "Я до сих пор помню, как волновался. И, кажется, ты — тоже 😊" },
+                { text: "В кафе", reaction: "Я до сих пор помню, как волновался. И, кажется, ты — тоже 😊" },
+                { text: "В кино", reaction: "Я до сих пор помню, как волновался. И, кажется, ты — тоже 😊" }
+            ]
+        },
+        {
+            text: "Как думаешь, какая твоя черта самая притягательная?",
+            options: [
+                { text: "Чувство юмора", reaction: "Спорим, я назову другую? Хотя про улыбку ты точно угадала" },
+                { text: "Ум", reaction: "Спорим, я назову другую? Хотя про улыбку ты точно угадала" },
+                { text: "Доброта", reaction: "Спорим, я назову другую? Хотя про улыбку ты точно угадала" },
+                { text: "Твоя улыбка", reaction: "Спорим, я назову другую? Хотя про улыбку ты точно угадала" }
+            ]
+        },
+        {
+            text: "Если бы я был волшебником, что бы ты попросила прямо сейчас?",
+            options: [
+                { text: "Цветы", reaction: "Уже заказал. Как вернёшься — они тебя ждут 🌷" },
+                { text: "Хорошую музыку", reaction: "Скину тебе плейлист, который специально собирал. Говорят, под него хочется улыбаться" },
+                { text: "Чтобы день длился дольше", reaction: "Тогда сегодняшний вечер точно затянется. В хорошем смысле 😊" },
+                { text: "Сюрприз", reaction: "А вот это уже интересно. Значит, придётся что-то придумать... Жди" }
+            ]
+        },
+        {
+            text: "Сколько комплиментов ты готова получать в день?",
+            options: [
+                { text: "5", reaction: "Скромничаешь? Ладно, начнём с этого, а там посмотрим" },
+                { text: "10", reaction: "Скромничаешь? Ладно, начнём с этого, а там посмотрим" },
+                { text: "15", reaction: "Скромничаешь? Ладно, начнём с этого, а там посмотрим" },
+                { text: "Бесконечность", reaction: "Мудрый выбор. Придётся мне потренироваться 😄" }
+            ]
+        }
+    ];
+
+    let currentStep = 0;
+    let userAnswers = [];
+
+    function renderQuestion() {
+        const q = questions[currentStep];
+        document.getElementById('question-text').innerText = q.text;
+        
+        // ОТОБРАЖАЕМ ФОТО
+        const photoRow = document.getElementById('photo-row');
+        photoRow.innerHTML = `
+            <div class="photo-container">
+                <img src="${PHOTO_URLS[currentStep]}" alt="фото">
+            </div>
+        `;
+        
+        const container = document.getElementById('options-container');
+        container.innerHTML = '';
+
+        q.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'btn';
+            btn.innerText = opt.text;
+            btn.onclick = () => handleAnswer(opt.reaction, opt.text);
+            container.appendChild(btn);
+        });
+    }
+
+    function handleAnswer(reaction, answerText) {
+        userAnswers.push(answerText);
+        document.getElementById('reaction-message').innerText = reaction;
+        document.getElementById('reaction-modal').classList.add('active');
+    }
+
+    function nextQuestion() {
+        document.getElementById('reaction-modal').classList.remove('active');
+        currentStep++;
+        if (currentStep < questions.length) {
+            renderQuestion();
+        } else {
+            showFinal();
+        }
+    }
+
+    function showFinal() {
+        document.getElementById('quiz-container').classList.add('hidden');
+        document.getElementById('final-container').classList.remove('hidden');
+        launchConfetti();
+    }
+
+    function finishQuiz() {
+        launchConfetti();
+        launchConfetti();
+        document.getElementById('bonus-message').classList.remove('hidden');
+        sendToTelegram();
+    }
+
+    function launchConfetti() {
+        confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#ff4d6d', '#ffccd5', '#ffffff']
+        });
+    }
+
+    async function sendToTelegram() {
+        if(TELEGRAM_BOT_TOKEN === 'ТВОЙ_ТОКЕН_БОТА') {
+            console.log("Токен не настроен!");
+            return; 
+        }
+
+        const message = `🌸 Девушка прошла квест!\n\nОтветы:\n${userAnswers.join('\n')}`;
+        
+        try {
+            await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: TELEGRAM_CHAT_ID,
+                    text: message
+                })
+            });
+        } catch (e) {
+            console.log("Ошибка отправки", e);
+        }
+    }
+
+    renderQuestion();
+
+</script>
+
+</body>
+</html>
