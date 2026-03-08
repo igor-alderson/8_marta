@@ -108,7 +108,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 30px;
+            padding: 20px;
             box-sizing: border-box;
             opacity: 0;
             pointer-events: none;
@@ -122,12 +122,29 @@
             pointer-events: all;
         }
 
+        /* ОТДЕЛЬНЫЙ СТИЛЬ ДЛЯ ФОТО В МОДАЛКЕ */
+        .reaction-modal .photo-container {
+            width: 80%;
+            max-width: 300px;
+            margin: 0 auto 20px auto;
+        }
+        
+        .reaction-modal .photo-container img {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 3 / 4;
+            object-fit: cover;
+            border-radius: 16px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
         .reaction-text {
             font-size: 1.3rem;
-            margin: 20px 0 30px 0;
+            margin: 10px 0 20px 0;
             line-height: 1.5;
             color: #333;
             max-width: 400px;
+            padding: 0 10px;
         }
 
         .next-btn {
@@ -140,7 +157,7 @@
             cursor: pointer;
             font-weight: 600;
             box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         .hidden {
@@ -202,6 +219,17 @@
 
         .photo-row {
             width: 100%;
+        }
+
+        /* Адаптация для маленьких экранов */
+        @media (max-height: 700px) {
+            .reaction-modal .photo-container {
+                width: 60%;
+                max-width: 200px;
+            }
+            .reaction-text {
+                font-size: 1.1rem;
+            }
         }
     </style>
 </head>
